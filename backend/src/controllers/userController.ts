@@ -2,8 +2,24 @@ import { Request, Response } from "express";
 import User from "../models/userModel";
 import bcrypt from "bcryptjs";
 import { streamUpload } from "../utils/cloudinaryUpload";
+import jwt from "jsonwebtoken";
 
-export const registerUser = async (req: Request, res: Response) => {
+type RegisterBody = {
+  firstName: string;
+  lastName: string;
+  password: string;
+  confirmPassword: string;
+  email: string;
+};
+type LoginBody = {
+  email: string;
+  password: string;
+};
+
+export const registerUser = async (
+  req: Request<{}, {}, RegisterBody>,
+  res: Response,
+) => {
   try {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
     if (!email || !firstName || !lastName || !password || !confirmPassword) {
@@ -60,4 +76,50 @@ export const registerUser = async (req: Request, res: Response) => {
       message: "Internal server error",
     });
   }
+};
+
+export const login = async (req: Request<{}, {}, LoginBody>, res: Response) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ success: false, message: "All fields are required" });
+  }
+
+  const existingUser = await User.findOne({ email }).select("+password");
+  if (!existingUser) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Invalid credentials" });
+  }
+
+  const isPasswordMatch = await bcrypt.compare(password, existingUser.password);
+  if (!isPasswordMatch) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Invalid credentials" });
+  }
+
+  const token = jwt.sign(
+    {
+      email: existingUser.email,
+      id: existingUser._id,
+      role: existingUser.role,
+    },
+    process.env.JWT_SECRET!,
+    { expiresIn: "7d" },
+  );
+
+  res.cookie("token", token, {
+    sameSite: "lax",
+    httpOnly: true,
+    secure: false,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+  const userResponse = existingUser.toObject();
+
+  const { password: _, ...safeUser } = userResponse;
+  return res
+    .status(200)
+    .json({ success: true, message: "Logged in successfully", user: safeUser });
 };
