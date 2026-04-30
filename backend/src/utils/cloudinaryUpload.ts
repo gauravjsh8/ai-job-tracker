@@ -1,6 +1,7 @@
-import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
+import { UploadApiResponse } from "cloudinary";
 
 import streamifier from "streamifier";
+import cloudinary from "../config/cloudinary";
 
 export const streamUpload = (
   buffer: Buffer,
