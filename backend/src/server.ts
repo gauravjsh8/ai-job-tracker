@@ -4,9 +4,11 @@ import { connectTODb } from "./config/db";
 dotenv.config();
 import cors from "cors";
 import { userRouter } from "./routers/userRouter";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors());
 
 app.get("/", (req, res) => {

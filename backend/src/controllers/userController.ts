@@ -3,6 +3,7 @@ import User from "../models/userModel";
 import bcrypt from "bcryptjs";
 import { streamUpload } from "../utils/cloudinaryUpload";
 import jwt from "jsonwebtoken";
+import { AuthRequest } from "../middlewares/authMiddleware";
 
 type RegisterBody = {
   firstName: string;
@@ -148,6 +149,19 @@ export const logout = async (req: Request, res: Response) => {
       success: true,
       message: "Logged out successfully",
     });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+export const myProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await User.findById(req.user?.id);
+    console.log("USER", user);
+    return res.status(200).json({ success: true, user });
   } catch (error) {
     return res.status(500).json({
       success: false,
