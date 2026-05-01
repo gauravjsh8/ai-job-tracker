@@ -79,7 +79,10 @@ export const getSingleJob = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ success: false, message: "Not Logged in" });
     }
 
-    const job = await Job.findOne({ _id: jobId, user });
+    const job = await Job.findOne({ _id: jobId, user }).populate(
+      "user",
+      "firstName lastName",
+    );
     if (!job) {
       return res
         .status(404)
@@ -132,6 +135,43 @@ export const updateJob = async (
     return res
       .status(200)
       .json({ success: true, message: "Job updated successfully", job });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const deleteJob = async (req: AuthRequest, res: Response) => {
+  try {
+    const jobId = req.params.jobId;
+
+    if (
+      !jobId ||
+      typeof jobId !== "string" ||
+      !mongoose.Types.ObjectId.isValid(jobId)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid job ID format",
+      });
+    }
+    const user = req.user?.id;
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Not Logged in" });
+    }
+
+    const job = await Job.findOne({ _id: jobId, user });
+    if (!job) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Job not found or unauthorized" });
+    }
+
+    await job.deleteOne();
+    return res
+      .status(200)
+      .json({ success: true, message: "Job deleted successfully" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ success: false, message: "Server error" });
