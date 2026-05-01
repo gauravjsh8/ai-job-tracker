@@ -26,6 +26,7 @@ export const createJob = async (
     const job = await Job.create({
       title,
       salary,
+      company,
       location,
       notes,
       status,
@@ -35,6 +36,22 @@ export const createJob = async (
     return res
       .status(201)
       .json({ success: true, message: "Job created successfully", job });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const getJobs = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = req.user?.id;
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Not Logged in" });
+    }
+
+    const jobs = await Job.find({ user }).sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, count: jobs.length, jobs });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ success: false, message: "Server error" });

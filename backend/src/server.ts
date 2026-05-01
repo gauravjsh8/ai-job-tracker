@@ -5,6 +5,7 @@ dotenv.config();
 import cors from "cors";
 import { userRouter } from "./routers/userRouter";
 import cookieParser from "cookie-parser";
+import { jobRouter } from "./routers/jobRoutes";
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/users", userRouter);
+app.use("/api/jobs", jobRouter);
 
 const PORT = process.env.PORT || 5000;
 
