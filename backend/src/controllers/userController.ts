@@ -23,23 +23,12 @@ export const registerUser = async (
 ) => {
   try {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
-    if (!email || !firstName || !lastName || !password || !confirmPassword) {
-      return res
-        .status(400)
-        .json({ success: false, message: "All fields are required" });
-    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({
         success: false,
         message: "User with this email already exists ",
-      });
-    }
-    if (password !== confirmPassword) {
-      return res.status(404).json({
-        success: false,
-        message: "Password do not match ",
       });
     }
 
@@ -82,11 +71,6 @@ export const registerUser = async (
 export const login = async (req: Request<{}, {}, LoginBody>, res: Response) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "All fields are required" });
-    }
 
     const existingUser = await User.findOne({ email }).select("+password");
     if (!existingUser) {
@@ -161,6 +145,12 @@ export const myProfile = async (req: AuthRequest, res: Response) => {
   try {
     const user = await User.findById(req.user?.id);
     console.log("USER", user);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
     return res.status(200).json({ success: true, user });
   } catch (error) {
     return res.status(500).json({
