@@ -57,3 +57,20 @@ export const getJobs = async (req: AuthRequest, res: Response) => {
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+export const getSingleJob = async (req: AuthRequest, res: Response) => {
+  try {
+    const jobId = req.params.jobId;
+    const user = req.user?.id;
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Not Logged in" });
+    }
+
+    const job = await Job.findById(jobId);
+    return res.status(200).json({ success: true, job });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
