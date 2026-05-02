@@ -50,9 +50,41 @@ export const getJobs = async (req: AuthRequest, res: Response) => {
     if (!user) {
       return res.status(401).json({ success: false, message: "Not Logged in" });
     }
+    const { status, search, page = "1", limit = "5" } = req.query;
 
-    const jobs = await Job.find({ user }).sort({ createdAt: -1 });
-    return res.status(200).json({ success: true, count: jobs.length, jobs });
+    const filter: any = { user };
+
+    if (status && typeof status == "string") {
+      filter.status = status;
+    }
+    if (search && typeof search == "string") {
+      filter.$or = [
+        { title: { $regex: search, $options: "i" } },
+        {
+          company: { $regex: search, $options: "i" },
+        },
+      ];
+    }
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+    const skip = (pageNumber - 1) * limitNumber;
+
+    // const jobs = await Job.find({ user }).sort({ createdAt: -1 });
+    // return res.status(200).json({ success: true, count: jobs.length, jobs });
+    const jobs = await Job.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNumber);
+
+    const total = await Job.countDocuments(filter);
+    return res.status(200).json({
+      success: true,
+      count: jobs.length,
+      total,
+      page: pageNumber,
+      pages: Math.ceil(total / limitNumber),
+      jobs,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ success: false, message: "Server error" });
