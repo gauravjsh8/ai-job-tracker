@@ -9,9 +9,12 @@ type jobBody = {
   salary?: number;
   location?: string;
   notes?: string;
-  status?: "applied" | "interview" | "offer" | "rejected";
+  status?: StatusType;
   jobLink?: string;
 };
+
+type StatusType = "applied" | "interview" | "offer" | "rejected";
+
 export const createJob = async (
   req: AuthRequest & { body: jobBody },
   res: Response,
@@ -220,5 +223,93 @@ export const deleteJob = async (req: AuthRequest, res: Response) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const jobStats = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = req.user?.id;
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Not Logged in" });
+    }
+
+    const stats = await Job.aggregate([
+      { $match: { user: new mongoose.Types.ObjectId(user) } },
+      {
+        $group: { _id: "$status", count: { $sum: 1 } },
+      },
+    ]);
+
+    const result = {
+      applied: 0,
+      interview: 0,
+      offer: 0,
+      rejected: 0,
+    };
+
+    stats.forEach((item: { _id: StatusType; count: number }) => {
+      result[item._id] = item.count;
+    });
+
+    return res.status(200).json({ success: true, stats: result });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+export const monthlyStats = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = req.user?.id;
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Not Logged in" });
+    }
+
+    const stats = await Job.aggregate([
+      { $match: { user: new mongoose.Types.ObjectId(user) } },
+      {
+        $group: {
+          _id: {
+            month: { $month: "$createdAt" },
+            year: { $year: "$createdAt" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { "_id.month": -1, "_id.year": -1 } },
+    ]);
+
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    const formatted = stats.map((item: any) => ({
+      month: `${months[item._id.month - 1]} ${item._id.year}`,
+      count: item.count,
+    }));
+    return res.status(200).json({
+      success: true,
+      stats: formatted,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
