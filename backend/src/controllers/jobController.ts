@@ -50,7 +50,7 @@ export const getJobs = async (req: AuthRequest, res: Response) => {
     if (!user) {
       return res.status(401).json({ success: false, message: "Not Logged in" });
     }
-    const { status, search, page = "1", limit = "5" } = req.query;
+    const { status, search, page = "1", limit = "5", sort } = req.query;
 
     const filter: any = { user };
 
@@ -71,8 +71,21 @@ export const getJobs = async (req: AuthRequest, res: Response) => {
 
     // const jobs = await Job.find({ user }).sort({ createdAt: -1 });
     // return res.status(200).json({ success: true, count: jobs.length, jobs });
+
+    let sortOption = {};
+    if (sort === "latest") {
+      sortOption = { createdAt: -1 };
+    } else if (sort === "oldest") {
+      sortOption = { createdAt: 1 };
+    } else if (sort === "salary-high") {
+      sortOption = { salary: -1 };
+    } else if (sort === "salary-low") {
+      sortOption = { salary: 1 };
+    } else {
+      sortOption = { createdAt: -1 };
+    }
     const jobs = await Job.find(filter)
-      .sort({ createdAt: -1 })
+      .sort(sortOption)
       .skip(skip)
       .limit(limitNumber);
 
