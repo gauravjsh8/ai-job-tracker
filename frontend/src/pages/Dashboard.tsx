@@ -23,14 +23,9 @@ const Dashboard = () => {
   const [monthly, setMonthly] = useState<any[]>([]);
   const { user } = useAuthStore();
 
-  // if (!user) {
-  //   return <Navigate to="/login" />;
-  // }
-  console.log("USER", user);
   useEffect(() => {
     const fetchStats = async () => {
       const response = await api.get("/jobs/stats");
-      console.log(response);
       setStats(response.data.stats);
     };
     fetchStats();
@@ -39,7 +34,6 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchMonthly = async () => {
       const response = await api.get("/jobs/monthly-stats");
-      console.log(response);
       setMonthly(response.data.stats);
     };
     fetchMonthly();

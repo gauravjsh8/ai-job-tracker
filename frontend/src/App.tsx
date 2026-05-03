@@ -2,17 +2,22 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Jobs from "./pages/Jobs";
+import { Navbar } from "./components/Navbar";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
+    <>
+      <BrowserRouter>
+        <Navbar />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/jobs" element={<Jobs />} />
-      </Routes>
-    </BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+
+          <Route path="/login" element={<Login />} />
+          <Route path="/jobs" element={<Jobs />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

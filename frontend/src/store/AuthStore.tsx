@@ -21,7 +21,6 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       login: async (email, password) => {
         const response = await api.post("/users/login", { email, password });
-        console.log(response);
         set({ user: response.data.user });
       },
       logout: async () => {
