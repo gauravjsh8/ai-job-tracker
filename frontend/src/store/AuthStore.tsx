@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "../services/api";
+import { persist } from "zustand/middleware";
 
 type User = {
   _id: string;
@@ -14,14 +15,23 @@ type AuthState = {
   logout: () => Promise<void>;
 };
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  login: async (email, password) => {
-    const response = await api.post("/users/login", { email, password });
-    console.log(response);
-    set({ user: response.data.user });
-  },
-  logout: async () => {
-    set({ user: null });
-  },
-}));
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      login: async (email, password) => {
+        const response = await api.post("/users/login", { email, password });
+        console.log(response);
+        set({ user: response.data.user });
+      },
+      logout: async () => {
+        await api.get("/users/logout");
+        set({ user: null });
+      },
+    }),
+    {
+      name: "auth-storage",
+      partialize: (state) => ({ user: state.user }),
+    },
+  ),
+);
