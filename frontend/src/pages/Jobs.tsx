@@ -16,6 +16,9 @@ const Jobs = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
 
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -23,9 +26,10 @@ const Jobs = () => {
 
         setLoading(true);
         const response = await api.get(
-          `/jobs/all-jobs?search=${search}&status=${status}`,
+          `/jobs/all-jobs?search=${search}&status=${status}&page=${page}`,
         );
         setJobs(response.data.jobs);
+        setPages(response.data.pages);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -33,7 +37,7 @@ const Jobs = () => {
       }
     };
     fetchJobs();
-  }, [search, status]);
+  }, [search, status, page]);
 
   return (
     <div className="p-4">
@@ -42,14 +46,20 @@ const Jobs = () => {
         <input
           type="text"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
           className="border border-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 mb-5 p-3 rounded-2xl"
           placeholder="Search "
         />
         <select
           className="border p-2 border-green-500 rounded-xl mb-5 focus:outline-none"
           value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          onChange={(e) => {
+            setStatus(e.target.value);
+            setPage(1);
+          }}
         >
           <option value="">Select Category......</option>
           <option value="applied">Applied</option>
@@ -70,6 +80,16 @@ const Jobs = () => {
             <p className="text-sm opacity-70">{job.status.toUpperCase()}</p>
           </div>
         ))}
+      <div className="flex gap-3  ">
+        {[...Array(pages)].map((_, i) => (
+          <button
+            className={`cursor-pointer ${page === i + 1 ? "text-green-500" : "text-gray-500"}`}
+            onClick={() => setPage(i + 1)}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
