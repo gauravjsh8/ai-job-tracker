@@ -14,6 +14,7 @@ const Jobs = () => {
   const [loading, setLoading] = useState(false);
 
   const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -21,7 +22,9 @@ const Jobs = () => {
         if (search.length < 2 && search !== "") return;
 
         setLoading(true);
-        const response = await api.get(`/jobs/all-jobs?search=${search}`);
+        const response = await api.get(
+          `/jobs/all-jobs?search=${search}&status=${status}`,
+        );
         setJobs(response.data.jobs);
         setLoading(false);
       } catch (error) {
@@ -30,18 +33,32 @@ const Jobs = () => {
       }
     };
     fetchJobs();
-  }, [search]);
+  }, [search, status]);
 
   return (
     <div className="p-4">
       <h1 className="text-5xl mb-10">Jobs</h1>
-      <input
-        type="text"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="border border-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 mb-5 p-3 rounded-2xl"
-        placeholder="Search......"
-      />
+      <div className="flex gap-4">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border border-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 mb-5 p-3 rounded-2xl"
+          placeholder="Search "
+        />
+        <select
+          className="border p-2 border-green-500 rounded-xl mb-5 focus:outline-none"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
+          <option value="">Select Category......</option>
+          <option value="applied">Applied</option>
+          <option value="interview">Interview</option>
+          <option value="offer">Offered</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
       {loading && <p>Loading...</p>}
 
       {!loading && jobs.length === 0 && <p>No jobs found</p>}

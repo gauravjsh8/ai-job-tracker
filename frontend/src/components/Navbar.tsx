@@ -46,7 +46,7 @@ export const Navbar = () => {
         </div>
       ) : (
         <button
-          className="bg-gray-300 p-2 pl-3 pr-3 text-green-600 rounded-2xl cursor-pointer"
+          className="bg-green-400 p-2 pl-3 pr-3 text-white rounded-2xl cursor-pointer"
           onClick={() => navigate("/login")}
         >
           Login
