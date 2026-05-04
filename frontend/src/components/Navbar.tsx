@@ -16,7 +16,7 @@ export const Navbar = () => {
   return (
     <div className="bg-white p-3 flex items-center justify-between">
       <Link to="/" className="text-green-500 font-extrabold">
-        Navbar
+        Job-Tracker
       </Link>
 
       <div className="flex items-center gap-3">

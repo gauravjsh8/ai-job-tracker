@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 type Jobtype = {
   _id: string;
@@ -19,10 +20,12 @@ const Jobs = () => {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        if (search.length < 2 && search !== "") return;
+        if (search.trim().length < 2 && search.trim() !== "") return;
 
         setLoading(true);
         const response = await api.get(
@@ -38,6 +41,17 @@ const Jobs = () => {
     };
     fetchJobs();
   }, [search, status, page]);
+
+  const handleClick = async (id: string) => {
+    try {
+      const response = await api.delete(`/jobs/${id}`);
+      console.log("DELETE RESPONSE", response);
+
+      setJobs((prev) => prev.filter((p) => p._id !== id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="p-4">
@@ -77,12 +91,30 @@ const Jobs = () => {
           <div key={job._id} className=" bg-gray-300  mb-7 p-3">
             <h1 className="font-bold">{job.title}</h1>
             <p>{job.company}</p>
-            <p className="text-sm opacity-70">{job.status.toUpperCase()}</p>
+            <div className="flex items-center justify-between">
+              <p className="text-sm opacity-70">{job.status.toUpperCase()}</p>
+              <div className="flex items-center justify-center gap-5">
+                <button
+                  className="bg-blue-400 pr-6 pl-6 rounded-2xl cursor-pointer"
+                  onClick={() => navigate(`/edit-jobs/${job._id}`)}
+                >
+                  Edit
+                </button>
+
+                <button
+                  className="bg-red-400 pr-3 pl-3 rounded-2xl cursor-pointer"
+                  onClick={() => handleClick(job._id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           </div>
         ))}
       <div className="flex gap-3  ">
         {[...Array(pages)].map((_, i) => (
           <button
+            key={i}
             className={`cursor-pointer ${page === i + 1 ? "text-green-500" : "text-gray-500"}`}
             onClick={() => setPage(i + 1)}
           >

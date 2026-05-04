@@ -21,7 +21,6 @@ type statType = {
 const Dashboard = () => {
   const [stats, setStats] = useState<statType | null>(null);
   const [monthly, setMonthly] = useState<any[]>([]);
-  const { user } = useAuthStore();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -39,11 +38,11 @@ const Dashboard = () => {
     fetchMonthly();
   }, []);
   return (
-    <div className="bg-green-300 p-6 h-screen">
+    <div className="bg-green-100 p-6 h-screen">
       <h1 className="text-4xl">Dashboard</h1>
       {stats ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mt-10 ">
-          <div className="bg-pink-300  text-2xl  p-10 rounded-2xl ">
+          <div className="bg-violet-300  text-2xl  p-10 rounded-2xl ">
             <h1>Applied</h1>
             <p className="text-2xl font-bold text-green-500">
               {stats?.applied}
@@ -77,7 +76,7 @@ const Dashboard = () => {
             <XAxis dataKey="month" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="count" fill="#eee476" radius={[10, 10, 0, 0]} />
+            <Bar dataKey="count" fill="#3A8796" radius={[10, 10, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
