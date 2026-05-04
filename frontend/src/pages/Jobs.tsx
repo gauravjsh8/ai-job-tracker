@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { Trash, UserPen } from "lucide-react";
 
 type Jobtype = {
   _id: string;
@@ -95,17 +96,17 @@ const Jobs = () => {
               <p className="text-sm opacity-70">{job.status.toUpperCase()}</p>
               <div className="flex items-center justify-center gap-5">
                 <button
-                  className="bg-blue-400 pr-6 pl-6 rounded-2xl cursor-pointer"
+                  className=" cursor-pointer"
                   onClick={() => navigate(`/edit-jobs/${job._id}`)}
                 >
-                  Edit
+                  <UserPen className="cursor-pointer text-blue-500 hover:text-blue-700" />
                 </button>
 
                 <button
-                  className="bg-red-400 pr-3 pl-3 rounded-2xl cursor-pointer"
+                  className=" cursor-pointer"
                   onClick={() => handleClick(job._id)}
                 >
-                  Delete
+                  <Trash className="cursor-pointer text-red-500 hover:text-red-700" />
                 </button>
               </div>
             </div>

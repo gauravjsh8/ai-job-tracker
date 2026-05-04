@@ -1,6 +1,7 @@
 import { useState } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 type JobType = {
   title: string;
@@ -18,7 +19,7 @@ const job = {
   salary: "",
   location: "",
   notes: "",
-  status: "",
+  status: "applied",
   jobLink: "",
 };
 const CreateJob = () => {
@@ -28,13 +29,16 @@ const CreateJob = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await api.post("/jobs/create-job", {
+      await api.post("/jobs/create-job", {
         ...addJob,
         salary: addJob.salary ? Number(addJob.salary) : undefined,
       });
+      toast.success("Job added successfully");
       navigate("/jobs");
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message[0] || "Error while adding job",
+      );
     }
   };
 

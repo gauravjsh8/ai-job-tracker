@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/AuthStore";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -13,17 +14,18 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(email, password);
+      toast.success("Logged in successfully");
       setTimeout(() => {
-        navigate("/");
+        navigate("/dashboard");
       }, 2000);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      toast.error(error?.response?.data.message || "Error while logging in");
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen  ">
-      <div className="bg-gray-200 p-3 h-80  w-100 rounded-2xl shadow-green-300 shadow-2xl   ">
+    <div className="p-20 flex items-center justify-center   ">
+      <div className="bg-gray-200 p-3 h-90  w-90 rounded-2xl shadow-green-300 shadow-2xl   ">
         <h1 className="text-center mb-4 font-bold text-3xl">Login</h1>
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col space-y-7">
@@ -49,15 +51,22 @@ const Login = () => {
                 placeholder="password"
               />
             </div>
+
             <div className="text-center mb-3">
               <button
                 type="submit"
-                className="bg-green-500 w-50 p-2 rounded-2xl cursor-pointer text-white"
+                className="bg-green-500 w-full p-2 rounded-2xl cursor-pointer text-white"
               >
                 Login
               </button>
             </div>
           </div>
+          <p className="text-center">
+            Not registered yet?{" "}
+            <Link to="/register" className="text-blue-500 ">
+              Register here
+            </Link>
+          </p>
         </form>
       </div>
     </div>

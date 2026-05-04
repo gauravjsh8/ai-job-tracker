@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 type JobType = {
   title: string;
@@ -59,10 +60,10 @@ const Edit = () => {
           ...jobs,
           salary: jobs.salary ? Number(jobs.salary) : undefined,
         });
-
+        toast.success("Job edited successfully");
         navigate("/jobs");
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        toast.error(error?.response?.data.message[0] || "Error while editing ");
       }
     };
     editJOb();

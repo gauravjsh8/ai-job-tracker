@@ -32,6 +32,12 @@ jobRouter.get("/stats", authMiddleware, jobStats);
 
 jobRouter.get("/monthly-stats", authMiddleware, monthlyStats);
 
-jobRouter.patch("/:jobId", authMiddleware, checkJobownership, updateJob);
+jobRouter.patch(
+  "/:jobId",
+  authMiddleware,
+  checkJobownership,
+  validate(jobSchema),
+  updateJob,
+);
 
 jobRouter.delete("/:jobId", authMiddleware, checkJobownership, deleteJob);

@@ -19,8 +19,8 @@ export const Navbar = () => {
         Job-Tracker
       </Link>
 
-      <div className="flex items-center gap-3">
-        <Link className="text-green-500 font-bold" to="/">
+      <div className="flex items-center gap-5">
+        <Link className="text-green-500 font-bold" to="/dashboard">
           Dashboard
         </Link>
         <Link className="text-green-500 font-bold" to="/jobs">

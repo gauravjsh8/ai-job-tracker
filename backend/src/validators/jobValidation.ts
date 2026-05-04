@@ -7,5 +7,5 @@ export const jobSchema = z.object({
   location: z.string().optional(),
   notes: z.string().optional(),
   status: z.string(),
-  jobLink: z.url("Invalid url").optional(),
+  jobLink: z.url("Invalid url").optional().or(z.literal("")),
 });
