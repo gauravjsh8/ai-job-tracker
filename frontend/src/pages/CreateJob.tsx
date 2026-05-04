@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 type JobType = {
   title: string;
@@ -21,6 +22,7 @@ const job = {
   jobLink: "",
 };
 const CreateJob = () => {
+  const navigate = useNavigate();
   const [addJob, setAddJob] = useState<JobType>(job);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,7 +32,7 @@ const CreateJob = () => {
         ...addJob,
         salary: addJob.salary ? Number(addJob.salary) : undefined,
       });
-      console.log("JOB RESPONSE", response);
+      navigate("/jobs");
     } catch (error) {
       console.log(error);
     }
@@ -81,14 +83,18 @@ const CreateJob = () => {
             onChange={handleChange}
             name="salary"
           />
-          <input
-            type="text"
-            placeholder="Status"
-            className=" border border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 rounded-2xl p-2"
+          <select
+            className="border p-2 border-green-500 rounded-xl mb-5 focus:outline-none"
             value={addJob.status}
             onChange={handleChange}
             name="status"
-          />
+          >
+            <option value="">Select Category......</option>
+            <option value="applied">Applied</option>
+            <option value="interview">Interview</option>
+            <option value="offer">Offered</option>
+            <option value="rejected">Rejected</option>
+          </select>
           <input
             type="text"
             placeholder="Job Link"

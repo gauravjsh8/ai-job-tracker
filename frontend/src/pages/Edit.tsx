@@ -108,14 +108,18 @@ const Edit = () => {
             onChange={handleChange}
             name="salary"
           />
-          <input
-            type="text"
-            placeholder="Status"
-            className=" border border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 rounded-2xl p-2"
+          <select
+            className="border p-2 border-green-500 rounded-xl mb-5 focus:outline-none"
             value={jobs.status}
             onChange={handleChange}
             name="status"
-          />
+          >
+            <option value="">Select Category......</option>
+            <option value="applied">Applied</option>
+            <option value="interview">Interview</option>
+            <option value="offer">Offered</option>
+            <option value="rejected">Rejected</option>
+          </select>
           <input
             type="text"
             placeholder="Job Link"

@@ -31,9 +31,8 @@ export const Navbar = () => {
       {user ? (
         <div className="flex items-center justify-between gap-3">
           <h1>
-            {" "}
-            Welcome{" "}
-            <span className="text-green-500 font-extrabold">
+            Welcome
+            <span className="text-green-500 font-extrabold ml-2">
               {user.firstName}
             </span>
           </h1>
