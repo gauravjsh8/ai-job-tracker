@@ -6,8 +6,9 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 export const getNextSteps = async (req: Request, res: Response) => {
   try {
     const { title, company, status } = req.body;
+
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
     });
 
     const prompt = `
@@ -25,6 +26,7 @@ Keep it short and actionable (bullet points).
     const response = result.response.text();
     res.json({ success: true, advice: response });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       success: false,
       message: "AI error",

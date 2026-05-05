@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
-import { Trash, UserPen } from "lucide-react";
+import { Lightbulb, Trash, UserPen } from "lucide-react";
 
 type Jobtype = {
   _id: string;
@@ -54,6 +54,17 @@ const Jobs = () => {
     }
   };
 
+  const handleAI = async (job: any) => {
+    try {
+      const response = await api.post("/ai/next-steps", {
+        title: job.title,
+        company: job.company,
+        status: job.status,
+      });
+      console.log(response);
+    } catch (error) {}
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-5xl mb-10">Jobs</h1>
@@ -101,12 +112,17 @@ const Jobs = () => {
                 >
                   <UserPen className="cursor-pointer text-blue-500 hover:text-blue-700" />
                 </button>
-
                 <button
                   className=" cursor-pointer"
                   onClick={() => handleClick(job._id)}
                 >
                   <Trash className="cursor-pointer text-red-500 hover:text-red-700" />
+                </button>
+                <button
+                  className=" cursor-pointer"
+                  onClick={() => handleAI(job)}
+                >
+                  <Lightbulb className="cursor-pointer text-yellow-700 hover:text-yellow-900" />
                 </button>
               </div>
             </div>

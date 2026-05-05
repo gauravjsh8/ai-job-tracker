@@ -4,4 +4,4 @@ import { authMiddleware } from "../middlewares/authMiddleware";
 
 export const aiRouter = express.Router();
 
-aiRouter.post("/create-job", authMiddleware, getNextSteps);
+aiRouter.post("/next-steps", authMiddleware, getNextSteps);
