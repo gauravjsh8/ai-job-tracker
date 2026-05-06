@@ -1,10 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/AuthStore";
 import toast from "react-hot-toast";
+import { useState } from "react";
 
 export const Navbar = () => {
   const { user, logout } = useAuthStore();
-  console.log(user);
+
+  const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -17,7 +19,7 @@ export const Navbar = () => {
   };
 
   return (
-    <div className="bg-white p-3 flex items-center justify-between">
+    <div className="bg-white p-3 flex items-center justify-between ">
       <Link to="/" className="text-green-500 font-extrabold">
         Job-Tracker
       </Link>
@@ -36,7 +38,11 @@ export const Navbar = () => {
           )}
         </div>
       )}
-
+      {open && (
+        <div className="bg-white p-3 absolute top-15 right-20">
+          <Link to="/my-profile">My-profile</Link>
+        </div>
+      )}
       {user ? (
         <div className="flex items-center justify-between gap-3">
           <h1>
@@ -45,7 +51,13 @@ export const Navbar = () => {
               {user.firstName}
             </span>
           </h1>
-          <img src={user.imageUrl} className="w-10 h-10 rounded-full" />
+          <img
+            src={user.imageUrl}
+            className="w-10 h-10 rounded-full relative"
+            onClick={() => {
+              setOpen((prev) => !prev);
+            }}
+          />
 
           <button
             className="bg-gray-300 p-2 pl-3 pr-3 text-green-600 rounded-2xl cursor-pointer"

@@ -13,6 +13,7 @@ import {
   AdminProtectedRoutes,
   ProtectedRoutes,
 } from "./components/ProtectedRoutes";
+import MyProfile from "./pages/MyProfile";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
 
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/my-profile" element={<MyProfile />} />
           <Route
             path="/jobs"
             element={
