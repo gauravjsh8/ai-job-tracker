@@ -8,6 +8,7 @@ type User = {
   lastName: string;
   email: string;
   role: string;
+  imageUrl: string;
 };
 
 type AuthState = {

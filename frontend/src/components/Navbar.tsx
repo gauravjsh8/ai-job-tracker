@@ -45,6 +45,8 @@ export const Navbar = () => {
               {user.firstName}
             </span>
           </h1>
+          <img src={user.imageUrl} className="w-10 h-10 rounded-full" />
+
           <button
             className="bg-gray-300 p-2 pl-3 pr-3 text-green-600 rounded-2xl cursor-pointer"
             onClick={handleLogout}
