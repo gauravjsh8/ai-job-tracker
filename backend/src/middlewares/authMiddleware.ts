@@ -82,8 +82,9 @@ export const adminMiddleware = (
   res: Response,
   next: NextFunction,
 ) => {
+  console.log(req.cookies);
   if (req.user?.role !== "admin") {
-    return res.status(401).json({
+    return res.status(403).json({
       success: false,
       message: "Only accessible to admin",
     });

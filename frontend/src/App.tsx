@@ -8,7 +8,11 @@ import Edit from "./pages/Edit";
 import { Toaster } from "react-hot-toast";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import ProtectedRoutes from "./components/ProtectedRoutes";
+import Users from "./pages/Users";
+import {
+  AdminProtectedRoutes,
+  ProtectedRoutes,
+} from "./components/ProtectedRoutes";
 
 function App() {
   return (
@@ -46,6 +50,14 @@ function App() {
               <ProtectedRoutes>
                 <Jobs />
               </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <AdminProtectedRoutes>
+                <Users />
+              </AdminProtectedRoutes>
             }
           />
         </Routes>

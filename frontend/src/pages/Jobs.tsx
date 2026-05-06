@@ -143,7 +143,9 @@ const Jobs = () => {
         <p className="text-white text-3xl text-center mt-50">Loading...</p>
       )}
 
-      {!loading && jobs.length === 0 && <p>No jobs found</p>}
+      {!loading && jobs.length === 0 && (
+        <p className="text-white text-4xl text-center mt-10">No jobs found</p>
+      )}
       {!loading &&
         jobs.map((job) => (
           <div key={job._id} className=" bg-gray-300  mb-7 p-3">
@@ -162,7 +164,6 @@ const Jobs = () => {
                 <button
                   title="Delete"
                   className=" cursor-pointer"
-                  //   onClick={() => handleClick(job._id)}
                   onClick={() => setDeleteId(job._id)}
                 >
                   <Trash className="cursor-pointer text-red-500 hover:text-red-700" />

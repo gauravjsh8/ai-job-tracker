@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 export const Navbar = () => {
   const { user, logout } = useAuthStore();
+  console.log(user);
 
   const navigate = useNavigate();
 
@@ -28,6 +29,11 @@ export const Navbar = () => {
           <Link className="text-green-500 font-bold" to="/jobs">
             Jobs
           </Link>
+          {user.role === "admin" && (
+            <Link className="text-green-500 font-bold" to="/users">
+              Users
+            </Link>
+          )}
         </div>
       )}
 

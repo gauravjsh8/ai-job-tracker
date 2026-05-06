@@ -23,7 +23,7 @@ userRouter.post(
 userRouter.post("/login", validate(loginSchema), login);
 userRouter.get("/logout", authMiddleware, logout);
 userRouter.get("/my-profile", myProfile);
-userRouter.get("/all-users", adminMiddleware, getUsers);
+userRouter.get("/all-users", authMiddleware, adminMiddleware, getUsers);
 userRouter.patch(
   "/temporary-password/:id",
   authMiddleware,
