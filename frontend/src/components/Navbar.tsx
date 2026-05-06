@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/AuthStore";
 import toast from "react-hot-toast";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const Navbar = () => {
   const { user, logout } = useAuthStore();

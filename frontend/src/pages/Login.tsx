@@ -65,6 +65,9 @@ const Login = () => {
               </button>
             </div>
           </div>
+          <Link to="forgot-password">
+            <p className="text-center  text-blue-500">Forgot password?</p>
+          </Link>
           <p className="text-center">
             Not registered yet?{" "}
             <Link to="/register" className="text-blue-500 ">

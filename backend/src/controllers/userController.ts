@@ -5,6 +5,8 @@ import { streamUpload } from "../utils/cloudinaryUpload";
 import jwt from "jsonwebtoken";
 import { AuthRequest } from "../middlewares/authMiddleware";
 import { success } from "zod";
+import crypto from "crypto";
+import { sendEmail } from "../utils/sendEmail";
 
 type RegisterBody = {
   firstName: string;
@@ -23,7 +25,7 @@ export const registerUser = async (
   res: Response,
 ) => {
   try {
-    const { firstName, lastName, email, password, confirmPassword } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -42,6 +44,7 @@ export const registerUser = async (
       imageUrl = result.secure_url;
       publicImageId = result.public_id;
     }
+    const verificationToken = crypto.randomBytes(32).toString("hex");
 
     const newUser = await User.create({
       firstName,
@@ -50,7 +53,31 @@ export const registerUser = async (
       password: hashedPassword,
       imageUrl,
       publicImageId,
+      verificationToken,
+      isVerified: false,
     });
+
+    const verifyUrl = `http://localhost:5173/verify/${verificationToken}`;
+
+    await sendEmail(
+      email,
+      "Verify your account",
+      `<a href="${verifyUrl}" 
+       style="
+         display:inline-block;
+         padding:10px 20px;
+         background-color:#4CAF50;
+         color:white;
+         text-decoration:none;
+         border-radius:5px;
+         font-weight:bold;
+       ">
+       Verify Email
+    </a>
+
+    <p>If the button doesn't work, use this link:</p>
+    <p>${verifyUrl}</p>`,
+    );
 
     const userResponse = newUser.toObject();
     const { password: _, ...safeUser } = userResponse;
@@ -195,5 +222,98 @@ export const temporaryPassword = async (req: Request, res: Response) => {
       success: false,
       message: "Internal server error",
     });
+  }
+};
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const token = req.params.token;
+    if (!token) {
+      return res.status(400).json({ message: "Token is required" });
+    }
+    const user = await User.findOne({ verificationToken: token });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid token" });
+    }
+    user.isVerified = true;
+    await user.save();
+    return res.json({ message: "Email verified successfully" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "User with this email doesn't exist" });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 10 * 60 * 1000;
+    await user.save();
+
+    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+
+    await sendEmail(
+      email,
+      "Reset your password",
+      `
+    <h2>Reset your password</h2>
+    <p>Click the button below to reset your password:</p>
+
+    <a href="${resetUrl}" 
+       style="
+         display:inline-block;
+         padding:10px 20px;
+         background-color:#4CAF50;
+         color:white;
+         text-decoration:none;
+         border-radius:5px;
+         font-weight:bold;
+       ">
+      Reset Password
+    </a>
+
+    <p>If the button doesn't work, use this link:</p>
+    <p>${resetUrl}</p>
+  `,
+    );
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const token = req.params.token;
+    const { password } = req.body;
+    if (!token) {
+      return res.status(400).json({ message: "Token is required" });
+    }
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid token" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user.password = hashedPassword;
+
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+
+    await user.save();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };

@@ -9,6 +9,10 @@ export interface IUser extends Document {
   imageUrl?: string;
   publicImageId?: string;
   role: "user" | "admin";
+  verificationToken: string;
+  isVerified: boolean;
+  resetPasswordToken?: string | null;
+  resetPasswordExpires?: number | null;
 }
 
 const userSchema = new Schema<IUser>(
@@ -45,7 +49,17 @@ const userSchema = new Schema<IUser>(
       enum: ["user", "admin"],
       default: "user",
     },
+    isVerified: Boolean,
+    resetPasswordToken: {
+      type: String,
+      default: null,
+    },
+    resetPasswordExpires: {
+      type: Number,
+      default: null,
+    },
   },
+
   {
     timestamps: true,
   },
