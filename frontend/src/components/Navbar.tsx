@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/AuthStore";
+import toast from "react-hot-toast";
 
 export const Navbar = () => {
   const { user, logout } = useAuthStore();
@@ -8,9 +9,10 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     await logout();
+    toast.success("Logged out successfully");
     setTimeout(() => {
       navigate("/login");
-    }, 2000);
+    }, 1000);
   };
 
   return (
@@ -18,15 +20,16 @@ export const Navbar = () => {
       <Link to="/" className="text-green-500 font-extrabold">
         Job-Tracker
       </Link>
-
-      <div className="flex items-center gap-5">
-        <Link className="text-green-500 font-bold" to="/dashboard">
-          Dashboard
-        </Link>
-        <Link className="text-green-500 font-bold" to="/jobs">
-          Jobs
-        </Link>
-      </div>
+      {user && (
+        <div className="flex items-center gap-5">
+          <Link className="text-green-500 font-bold" to="/dashboard">
+            Dashboard
+          </Link>
+          <Link className="text-green-500 font-bold" to="/jobs">
+            Jobs
+          </Link>
+        </div>
+      )}
 
       {user ? (
         <div className="flex items-center justify-between gap-3">

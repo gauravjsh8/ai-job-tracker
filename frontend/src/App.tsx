@@ -8,6 +8,7 @@ import Edit from "./pages/Edit";
 import { Toaster } from "react-hot-toast";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 function App() {
   return (
@@ -19,13 +20,34 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/add-jobs" element={<CreateJob />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoutes>
+                <Dashboard />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/add-jobs"
+            element={
+              <ProtectedRoutes>
+                <CreateJob />
+              </ProtectedRoutes>
+            }
+          />
           <Route path="/edit-jobs/:id" element={<Edit />} />
 
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/jobs" element={<Jobs />} />
+          <Route
+            path="/jobs"
+            element={
+              <ProtectedRoutes>
+                <Jobs />
+              </ProtectedRoutes>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>

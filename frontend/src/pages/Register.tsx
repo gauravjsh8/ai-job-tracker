@@ -22,17 +22,21 @@ const user = {
 const Register = () => {
   const navigate = useNavigate();
   const [register, setRegister] = useState<UserType>(user);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setLoading(true);
       await api.post("/users/register", register);
       toast.success("User registered successfully");
       navigate("/login");
+      setLoading(false);
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message[0] || "Error while registering",
       );
+      setLoading(false);
     }
   };
 
@@ -41,11 +45,13 @@ const Register = () => {
   };
 
   return (
-    <div className=" mt-20 flex items-center justify-center">
-      <div className="p-3 bg-gray-100  shadow-green-200 shadow-2xl border border-green-300 rounded-4xl">
-        <h1 className="text-center text-2xl font-bold font-serif"> Register</h1>
+    <div className="min-h-screen flex justify-center bg-linear-to-br from-slate-900 via-indigo-950 to-emerald-950 ">
+      <div className=" bg-gray-100 w-130 p-3  shadow-green-200 shadow-2xl border border-green-300 rounded-4xl h-150 mt-30">
+        <h1 className="text-center text-2xl font-bold font-serif mt-10">
+          Register
+        </h1>
         <form
-          className="flex flex-col space-y-6 w-100 mt-7 p-4"
+          className="flex flex-col space-y-6 w-full mt-7 p-4"
           onSubmit={handleSubmit}
         >
           <input
@@ -92,10 +98,11 @@ const Register = () => {
           />
 
           <button
+            disabled={loading}
             type="submit"
-            className="bg-green-400 p-3 w-full rounded-2xl text-white font-bold cursor-pointer hover:bg-green-500"
+            className="bg-green-400 p-3 w-full rounded-2xl text-white font-bold cursor-pointer hover:bg-green-500 disabled:cursor-not-allowed disabled:bg-gray-400"
           >
-            Register
+            {loading ? "Registering" : "Register"}
           </button>
           <p className="text-center">
             Already registered?{" "}

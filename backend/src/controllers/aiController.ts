@@ -33,3 +33,37 @@ Keep it short and actionable (bullet points).
     });
   }
 };
+
+export const getEmailContent = async (req: Request, res: Response) => {
+  try {
+    const { title, company, status } = req.body;
+
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+    });
+
+    const prompt = `
+Write a professional follow-up email.
+
+Job Title: ${title}
+Company: ${company}
+Status: ${status}
+
+Instructions:
+- Be polite and professional
+- Keep it short
+- Include subject line
+- Do not be too long
+`;
+
+    const result = await model.generateContent(prompt);
+    const response = result.response.text();
+    res.json({ success: true, advice: response });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "AI error",
+    });
+  }
+};

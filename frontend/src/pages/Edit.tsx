@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 type JobType = {
@@ -143,6 +143,14 @@ const Edit = () => {
           >
             Edit job
           </button>
+          <Link to="/jobs">
+            <button
+              type="submit"
+              className="bg-gray-300 text-black p-3 w-full rounded-2xl  font-bold cursor-pointer hover:bg-gray-500 hover:text-white  :"
+            >
+              Go Back
+            </button>
+          </Link>
         </form>
       </div>
     </div>
