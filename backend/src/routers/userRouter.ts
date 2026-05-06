@@ -1,12 +1,14 @@
 import express from "express";
 import { upload } from "../middlewares/multer";
 import {
+  getUsers,
   login,
   logout,
   myProfile,
   registerUser,
+  temporaryPassword,
 } from "../controllers/userController";
-import { authMiddleware } from "../middlewares/authMiddleware";
+import { adminMiddleware, authMiddleware } from "../middlewares/authMiddleware";
 import { validate } from "../middlewares/validateMiddleware";
 import { loginSchema, registerSchema } from "../validators/userValidation";
 
@@ -21,3 +23,10 @@ userRouter.post(
 userRouter.post("/login", validate(loginSchema), login);
 userRouter.get("/logout", authMiddleware, logout);
 userRouter.get("/my-profile", myProfile);
+userRouter.get("/all-users", adminMiddleware, getUsers);
+userRouter.patch(
+  "/temporary-password/:id",
+  authMiddleware,
+  adminMiddleware,
+  temporaryPassword,
+);

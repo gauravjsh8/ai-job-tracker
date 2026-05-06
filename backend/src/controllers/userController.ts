@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { streamUpload } from "../utils/cloudinaryUpload";
 import jwt from "jsonwebtoken";
 import { AuthRequest } from "../middlewares/authMiddleware";
+import { success } from "zod";
 
 type RegisterBody = {
   firstName: string;
@@ -152,6 +153,43 @@ export const myProfile = async (req: AuthRequest, res: Response) => {
       });
     }
     return res.status(200).json({ success: true, user });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+export const getUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find().select("-password");
+    res.json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch users",
+    });
+  }
+};
+
+export const temporaryPassword = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const tempPassword = "Temp1234@";
+
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+    await User.findByIdAndUpdate(id, {
+      password: hashedPassword,
+    });
+    return res
+      .status(200)
+      .json({ success: true, temporaryPassword: tempPassword });
   } catch (error) {
     return res.status(500).json({
       success: false,

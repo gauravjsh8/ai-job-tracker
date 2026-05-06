@@ -76,3 +76,17 @@ export const checkJobownership = async (
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+export const adminMiddleware = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (req.user?.role !== "admin") {
+    return res.status(401).json({
+      success: false,
+      message: "Only accessible to admin",
+    });
+  }
+  next();
+};
