@@ -126,14 +126,14 @@ const CreateJob = () => {
             <button
               disabled={loading}
               type="submit"
-              className="bg-green-400 p-3 w-full rounded-2xl text-white font-bold cursor-pointer hover:bg-green-500disabled:cursor-not-allowed disabled:bg-gray-400"
+              className="bg-green-400 p-3 w-full rounded-2xl text-white font-bold cursor-pointer hover:bg-green-500 disabled:cursor-not-allowed disabled:bg-gray-400"
             >
               {loading ? "Adding job" : "Add"}
             </button>
             <Link to="/jobs">
               <button
                 type="submit"
-                className="bg-gray-500 text-black p-3 w-full rounded-2xl  font-bold cursor-pointer hover:bg-gray-700 hover:text-white "
+                className="  text-black border border-green-500 p-3 w-full rounded-2xl  font-bold cursor-pointer hover:bg-gray-400 hover:border-none hover:text-white "
               >
                 Go Back
               </button>

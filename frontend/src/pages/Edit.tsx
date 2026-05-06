@@ -69,8 +69,8 @@ const Edit = () => {
     editJOb();
   };
   return (
-    <div className=" mt-20 flex items-center justify-center">
-      <div className="p-3 bg-gray-100  shadow-green-200 shadow-2xl border border-green-300 rounded-4xl">
+    <div className="bg-linear-to-br from-slate-900 via-indigo-950 to-emerald-950 flex justify-center h-screen">
+      <div className="p-3 mt-20 bg-gray-100 h-180  shadow-green-200 shadow-2xl border border-green-300 rounded-4xl">
         <h1 className="text-center text-2xl font-bold font-serif"> Edit Job</h1>
         <form
           className="flex flex-col space-y-6 w-100 mt-7 p-4"

@@ -18,7 +18,6 @@ const Users = () => {
   useEffect(() => {
     const fetchusers = async () => {
       const response = await api.get("/users/all-users");
-      console.log(response);
       setUsers(response.data.users);
     };
     fetchusers();
