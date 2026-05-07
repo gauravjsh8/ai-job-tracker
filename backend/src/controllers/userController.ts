@@ -285,6 +285,10 @@ export const forgotPassword = async (req: Request, res: Response) => {
     <p>${resetUrl}</p>
   `,
     );
+    return res.json({
+      success: true,
+      message: "Resent password sent successfully",
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Server error" });
   }
@@ -313,6 +317,10 @@ export const resetPassword = async (req: Request, res: Response) => {
     user.resetPasswordExpires = null;
 
     await user.save();
+    return res.json({
+      success: true,
+      message: "Password changed successfully",
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Server error" });
   }

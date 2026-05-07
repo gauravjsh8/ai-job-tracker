@@ -14,6 +14,7 @@ import {
   ProtectedRoutes,
 } from "./components/ProtectedRoutes";
 import MyProfile from "./pages/MyProfile";
+import ForgotPssword from "./pages/ForgotPssword";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
               </AdminProtectedRoutes>
             }
           />
+          <Route path="/forgot-password" element={<ForgotPssword />} />
         </Routes>
       </BrowserRouter>
     </>

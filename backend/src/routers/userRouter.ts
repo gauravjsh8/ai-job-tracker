@@ -1,6 +1,7 @@
 import express from "express";
 import { upload } from "../middlewares/multer";
 import {
+  forgotPassword,
   getUsers,
   login,
   logout,
@@ -30,3 +31,5 @@ userRouter.patch(
   adminMiddleware,
   temporaryPassword,
 );
+
+userRouter.post("/forgot-password", forgotPassword);
