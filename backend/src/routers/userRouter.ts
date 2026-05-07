@@ -9,6 +9,7 @@ import {
   registerUser,
   resetPassword,
   temporaryPassword,
+  uploadResume,
 } from "../controllers/userController";
 import { adminMiddleware, authMiddleware } from "../middlewares/authMiddleware";
 import { validate } from "../middlewares/validateMiddleware";
@@ -35,3 +36,5 @@ userRouter.patch(
 
 userRouter.post("/forgot-password", forgotPassword);
 userRouter.post("/reset-password/:token", resetPassword);
+
+userRouter.post("/upload-resume", authMiddleware, uploadResume);

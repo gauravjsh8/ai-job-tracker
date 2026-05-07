@@ -325,3 +325,29 @@ export const resetPassword = async (req: Request, res: Response) => {
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+export const uploadResume = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ success: false, message: "File not uploaded" });
+    }
+
+    let resumeUrl = "";
+    let resumePublicId = "";
+
+    const result = await streamUpload(req.file.buffer, "resumes", "raw");
+
+    resumeUrl = result.secure_url;
+    resumePublicId = result.public_id;
+
+    const user = await User.findByIdAndUpdate(
+      req.user?.id,
+      { resumeUrl, resumePublicId },
+      { new: true },
+    );
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
