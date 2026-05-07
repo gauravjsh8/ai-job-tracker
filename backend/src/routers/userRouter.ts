@@ -7,6 +7,7 @@ import {
   logout,
   myProfile,
   registerUser,
+  resetPassword,
   temporaryPassword,
 } from "../controllers/userController";
 import { adminMiddleware, authMiddleware } from "../middlewares/authMiddleware";
@@ -33,3 +34,4 @@ userRouter.patch(
 );
 
 userRouter.post("/forgot-password", forgotPassword);
+userRouter.post("/reset-password/:token", resetPassword);

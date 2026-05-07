@@ -15,6 +15,7 @@ import {
 } from "./components/ProtectedRoutes";
 import MyProfile from "./pages/MyProfile";
 import ForgotPssword from "./pages/ForgotPssword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
             }
           />
           <Route path="/forgot-password" element={<ForgotPssword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
     </>
