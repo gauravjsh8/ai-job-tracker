@@ -13,6 +13,8 @@ export interface IUser extends Document {
   isVerified: boolean;
   resetPasswordToken?: string | null;
   resetPasswordExpires?: number | null;
+  resumeUrl?: string;
+  resumePublicId?: string;
 }
 
 const userSchema = new Schema<IUser>(
@@ -58,6 +60,8 @@ const userSchema = new Schema<IUser>(
       type: Number,
       default: null,
     },
+    resumeUrl: String,
+    resumePublicId: String,
   },
 
   {
