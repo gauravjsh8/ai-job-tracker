@@ -16,6 +16,7 @@ import {
 import MyProfile from "./pages/MyProfile";
 import ForgotPssword from "./pages/ForgotPssword";
 import ResetPassword from "./pages/ResetPassword";
+import ResumeUpload from "./pages/ResumeUpload";
 
 function App() {
   return (
@@ -66,6 +67,14 @@ function App() {
           />
           <Route path="/forgot-password" element={<ForgotPssword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route
+            path="/upload-resume"
+            element={
+              <ProtectedRoutes>
+                <ResumeUpload />
+              </ProtectedRoutes>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>

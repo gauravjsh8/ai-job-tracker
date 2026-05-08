@@ -37,4 +37,9 @@ userRouter.patch(
 userRouter.post("/forgot-password", forgotPassword);
 userRouter.post("/reset-password/:token", resetPassword);
 
-userRouter.post("/upload-resume", authMiddleware, uploadResume);
+userRouter.patch(
+  "/upload-resume",
+  upload.single("resume"),
+  authMiddleware,
+  uploadResume,
+);

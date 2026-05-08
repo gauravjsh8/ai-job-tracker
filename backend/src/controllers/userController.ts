@@ -347,6 +347,10 @@ export const uploadResume = async (req: AuthRequest, res: Response) => {
       { resumeUrl, resumePublicId },
       { new: true },
     );
+    res.json({
+      success: true,
+      user,
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Server error" });
   }

@@ -9,7 +9,7 @@ export const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
-  const dropDownRef = useRef(null);
+  const dropDownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const handler = (e: any) => {

@@ -8,19 +8,23 @@ type User = {
   lastName: string;
   email: string;
   role: string;
-  imageUrl: string;
+  imageUrl?: string;
+  resumeUrl?: string;
 };
 
 type AuthState = {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  setUser: (user: User) => void;
 };
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
+      setUser: (user) => set({ user }),
+
       login: async (email, password) => {
         const response = await api.post("/users/login", { email, password });
         set({ user: response.data.user });
