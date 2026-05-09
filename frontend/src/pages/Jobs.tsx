@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
-import { BadgePlus, Lightbulb, Mails, Trash, UserPen } from "lucide-react";
+import {
+  BadgePlus,
+  Lightbulb,
+  Mails,
+  Trash,
+  User,
+  UserPen,
+  Users,
+} from "lucide-react";
 import toast from "react-hot-toast";
+import ReactMarkdown from "react-markdown";
 
 type Jobtype = {
   _id: string;
@@ -29,6 +38,9 @@ const Jobs = () => {
   const [aiAdvice, setAiAdvice] = useState("");
   const [loadingEmail, setLoadingEmail] = useState(false);
   const [aiEmail, setAiEmail] = useState("");
+
+  const [interviewQuestions, setInterviewQuestions] = useState("");
+  const [loadInterviewQuestions, setLoadInterviewQuestions] = useState(false);
 
   const navigate = useNavigate();
 
@@ -98,6 +110,23 @@ const Jobs = () => {
     } catch (error) {
       toast.error("AI failed");
       setLoadingEmail(false);
+    }
+  };
+
+  const handleAiInterview = async (job: any) => {
+    try {
+      setLoadInterviewQuestions(true);
+      const response = await api.post("/ai/ai-interview", {
+        title: job.title,
+        status: job.status,
+        company: job.company,
+      });
+      setInterviewQuestions(response.data.advice);
+      setLoadInterviewQuestions(false);
+      console.log(response);
+    } catch (error) {
+      toast.error("AI failed");
+      setLoadInterviewQuestions(false);
     }
   };
 
@@ -181,6 +210,13 @@ const Jobs = () => {
                   onClick={() => handleAiEmail(job)}
                 >
                   <Mails className="cursor-pointer text-green-700 hover:text-green-900" />
+                </button>
+                <button
+                  title="Email AI"
+                  className=" cursor-pointer"
+                  onClick={() => handleAiInterview(job)}
+                >
+                  <Users className="cursor-pointer text-yalloe-700 hover:text-yellow-900" />
                 </button>
               </div>
             </div>
@@ -333,6 +369,34 @@ const Jobs = () => {
             <button
               className="mt-4 bg-green-500 text-white px-4 py-2 rounded self-start"
               onClick={() => setAiEmail("")}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {loadInterviewQuestions && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-2xl w-125 shadow-lg flex flex-col items-center gap-3">
+            <h2 className="text-xl font-bold">✨ AI Next Steps</h2>
+            <p className="text-gray-500 text-sm">Thinking...</p>
+            <div className="w-8 h-8 border-4 border-green-400 border-t-transparent rounded-full animate-spin" />
+          </div>
+        </div>
+      )}
+      {interviewQuestions && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-2xl w-125 max-h-[80vh] flex flex-col shadow-lg">
+            <h2 className="text-xl font-bold mb-4">✨ AI Interview Ptactice</h2>
+
+            <div className="overflow-y-auto flex-1 pr-1 prose max-w-none">
+              <ReactMarkdown>{interviewQuestions}</ReactMarkdown>
+            </div>
+
+            <button
+              className="mt-4 bg-green-500 text-white px-4 py-2 rounded self-start"
+              onClick={() => setInterviewQuestions("")}
             >
               Close
             </button>
