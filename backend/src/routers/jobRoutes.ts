@@ -1,6 +1,6 @@
 import express from "express";
 import { validate } from "../middlewares/validateMiddleware";
-import { jobSchema } from "../validators/jobValidation";
+import { jobSchema, updateJobSchema } from "../validators/jobValidation";
 import {
   createJob,
   deleteJob,
@@ -36,7 +36,7 @@ jobRouter.patch(
   "/:jobId",
   authMiddleware,
   checkJobownership,
-  validate(jobSchema),
+  validate(updateJobSchema),
   updateJob,
 );
 

@@ -9,3 +9,13 @@ export const jobSchema = z.object({
   status: z.string(),
   jobLink: z.url("Invalid url").optional().or(z.literal("")),
 });
+
+export const updateJobSchema = z.object({
+  title: z.string().min(1, "Title is required").optional(),
+  company: z.string().min(1, "Company is required").optional(),
+  salary: z.number().optional(),
+  location: z.string().optional(),
+  notes: z.string().optional(),
+  status: z.string().optional(),
+  jobLink: z.url("Invalid url").optional().or(z.literal("")).optional(),
+});
