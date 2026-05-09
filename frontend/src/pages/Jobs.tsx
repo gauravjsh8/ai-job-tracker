@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  BadgePlus,
-  Lightbulb,
-  Mails,
-  Trash,
-  User,
-  UserPen,
-  Users,
-} from "lucide-react";
+
 import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
+import { JobCard } from "../components/jobs/jobCard";
+import { BadgePlus } from "lucide-react";
 
 type Jobtype = {
   _id: string;
@@ -177,50 +171,15 @@ const Jobs = () => {
       )}
       {!loading &&
         jobs.map((job) => (
-          <div key={job._id} className=" bg-gray-300  mb-7 p-3">
-            <h1 className="font-bold">{job.title}</h1>
-            <p>{job.company}</p>
-            <div className="flex items-center justify-between">
-              <p className="text-sm opacity-70">{job.status.toUpperCase()}</p>
-              <div className="flex items-center justify-center gap-5">
-                <button
-                  title="Edit"
-                  className=" cursor-pointer"
-                  onClick={() => navigate(`/edit-jobs/${job._id}`)}
-                >
-                  <UserPen className="cursor-pointer text-blue-500 hover:text-blue-700" />
-                </button>
-                <button
-                  title="Delete"
-                  className=" cursor-pointer"
-                  onClick={() => setDeleteId(job._id)}
-                >
-                  <Trash className="cursor-pointer text-red-500 hover:text-red-700" />
-                </button>
-                <button
-                  title="Consult AI"
-                  className=" cursor-pointer"
-                  onClick={() => handleAI(job)}
-                >
-                  <Lightbulb className="cursor-pointer text-yellow-700 hover:text-yellow-900" />
-                </button>
-                <button
-                  title="Email AI"
-                  className=" cursor-pointer"
-                  onClick={() => handleAiEmail(job)}
-                >
-                  <Mails className="cursor-pointer text-green-700 hover:text-green-900" />
-                </button>
-                <button
-                  title="Email AI"
-                  className=" cursor-pointer"
-                  onClick={() => handleAiInterview(job)}
-                >
-                  <Users className="cursor-pointer text-yalloe-700 hover:text-yellow-900" />
-                </button>
-              </div>
-            </div>
-          </div>
+          <JobCard
+            key={job._id}
+            job={job}
+            onEdit={() => navigate(`/edit-jobs/${job._id}`)}
+            onDelete={(id) => setDeleteId(id)}
+            onAiEmail={handleAiEmail}
+            onAiInterview={handleAiInterview}
+            onAiAdvice={handleAI}
+          />
         ))}
       {deleteId && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
