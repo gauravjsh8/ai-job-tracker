@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import { Link, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import ReactMarkdown from "react-markdown";
 import { JobCard } from "../components/jobs/jobCard";
-import { BadgePlus } from "lucide-react";
+import DeleteModal from "../components/jobs/DeleteModal";
+import { AiEmail } from "../components/jobs/AiEmail";
+import { InterviewQuestions } from "../components/jobs/InterviewQuestions";
+import { LoadingAi } from "../components/jobs/LoadingAi";
+import { AiAdvice } from "../components/jobs/AiAdvice";
+import SearchBar from "../components/jobs/SearchBar";
 
 type Jobtype = {
   _id: string;
@@ -16,23 +19,17 @@ type Jobtype = {
 
 const Jobs = () => {
   const [jobs, setJobs] = useState<Jobtype[]>([]);
-
   const [loading, setLoading] = useState(false);
   const [loadingAdvice, setLoadingAdvice] = useState(false);
-
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
-
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
-
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
-
   const [aiAdvice, setAiAdvice] = useState("");
   const [loadingEmail, setLoadingEmail] = useState(false);
   const [aiEmail, setAiEmail] = useState("");
-
   const [interviewQuestions, setInterviewQuestions] = useState("");
   const [loadInterviewQuestions, setLoadInterviewQuestions] = useState(false);
 
@@ -127,40 +124,13 @@ const Jobs = () => {
   return (
     <div className="p-4 h-screen bg-linear-to-br from-slate-900 via-indigo-950 to-emerald-950   ">
       <h1 className="text-center text-5xl mb-10 text-white">Jobs</h1>
-      <div className="flex gap-4 items-center justify-center  ">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setPage(1);
-          }}
-          className="border text-teal-200 border-green-400 focus:outline-none focus:ring-2 focus:ring-green-500 mb-5 p-3 rounded-2xl"
-          placeholder="Search "
-        />
-        <select
-          className="border text-teal-500 p-2 border-green-500 rounded-xl mb-5 focus:outline-none"
-          value={status}
-          onChange={(e) => {
-            setStatus(e.target.value);
-            setPage(1);
-          }}
-        >
-          <option value="">Select Category......</option>
-          <option value="applied">Applied</option>
-          <option value="interview">Interview</option>
-          <option value="offer">Offered</option>
-          <option value="rejected">Rejected</option>
-        </select>
-        <Link to="/add-jobs">
-          <button className="bg-white border border-green-500  p-2 pl-8 pr-8 mb-5 rounded-2xl hover:bg-slate-800 hover:text-white">
-            <div className="flex gap-3">
-              <BadgePlus />
-              Add jobs
-            </div>
-          </button>
-        </Link>
-      </div>
+      <SearchBar
+        search={search}
+        setSearch={setSearch}
+        setPage={setPage}
+        setStatus={setStatus}
+        status={status}
+      />
 
       {loading && (
         <p className="text-white text-3xl text-center mt-50">Loading...</p>
@@ -182,32 +152,11 @@ const Jobs = () => {
           />
         ))}
       {deleteId && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-2xl shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-3 text-red-500">Delete Job</h2>
-
-            <p className="text-gray-700 mb-6">
-              Do you really want to delete this job?
-            </p>
-
-            <div className="flex justify-end gap-3">
-              <button
-                className="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
-                onClick={() => setDeleteId(null)}
-              >
-                Cancel
-              </button>
-
-              <button
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-700 disabled:bg-red-300"
-                onClick={handleClick}
-                disabled={deleteLoading}
-              >
-                {deleteLoading ? "Deleting..." : "Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
+        <DeleteModal
+          onClose={() => setDeleteId(null)}
+          handleClick={handleClick}
+          deleteLoading={deleteLoading}
+        />
       )}
       {!loading && (
         <div className="flex gap-3  ">
@@ -223,144 +172,20 @@ const Jobs = () => {
         </div>
       )}
 
-      {loadingAdvice && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-2xl w-125 shadow-lg flex flex-col items-center gap-3">
-            <h2 className="text-xl font-bold">✨ AI Next Steps</h2>
-            <p className="text-gray-500 text-sm">Thinking...</p>
-            <div className="w-8 h-8 border-4 border-green-400 border-t-transparent rounded-full animate-spin" />
-          </div>
-        </div>
-      )}
+      {loadingAdvice && <LoadingAi />}
 
       {aiAdvice && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-2xl w-125 max-h-[80vh] flex flex-col shadow-lg">
-            <h2 className="text-xl font-bold mb-4">✨ AI Next Steps</h2>
-
-            <div className="overflow-y-auto flex-1 pr-1">
-              {aiAdvice
-                .split("\n")
-                .filter((line) => line.trim() !== "")
-                .map((line, i) => {
-                  if (line.startsWith("* **") || line.match(/^\*\s+\*\*/)) {
-                    const text = line.replace(/\*+/g, "").trim();
-                    return (
-                      <p key={i} className="font-semibold mt-3 mb-1">
-                        {text}
-                      </p>
-                    );
-                  }
-                  if (line.trim().startsWith("*")) {
-                    const text = line.replace(/^\s*\*+\s*/, "").trim();
-                    return (
-                      <p
-                        key={i}
-                        className="text-sm text-gray-700 pl-3 before:content-['•'] before:mr-2"
-                      >
-                        {text}
-                      </p>
-                    );
-                  }
-                  return (
-                    <p key={i} className="text-sm text-gray-700">
-                      {line}
-                    </p>
-                  );
-                })}
-            </div>
-
-            <button
-              className="mt-4 bg-green-500 text-white px-4 py-2 rounded self-start"
-              onClick={() => setAiAdvice("")}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <AiAdvice onClose={() => setAiAdvice("")} aiAdvice={aiAdvice} />
       )}
-      {loadingEmail && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-2xl w-125 shadow-lg flex flex-col items-center gap-3">
-            <h2 className="text-xl font-bold">✨ AI Next Steps</h2>
-            <p className="text-gray-500 text-sm">Thinking...</p>
-            <div className="w-8 h-8 border-4 border-green-400 border-t-transparent rounded-full animate-spin" />
-          </div>
-        </div>
-      )}
-      {aiEmail && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-2xl w-125 max-h-[80vh] flex flex-col shadow-lg">
-            <h2 className="text-xl font-bold mb-4">✨ AI Next Steps</h2>
+      {loadingEmail && <LoadingAi />}
+      {aiEmail && <AiEmail onClose={() => setAiEmail("")} aiEmail={aiEmail} />}
 
-            <div className="overflow-y-auto flex-1 pr-1">
-              {aiEmail
-                .split("\n")
-                .filter((line) => line.trim() !== "")
-                .map((line, i) => {
-                  if (line.startsWith("* **") || line.match(/^\*\s+\*\*/)) {
-                    const text = line.replace(/\*+/g, "").trim();
-                    return (
-                      <p key={i} className="font-semibold mt-3 mb-1">
-                        {text}
-                      </p>
-                    );
-                  }
-                  if (line.trim().startsWith("*")) {
-                    const text = line.replace(/^\s*\*+\s*/, "").trim();
-                    return (
-                      <p
-                        key={i}
-                        className="text-sm text-gray-700 pl-3 before:content-['•'] before:mr-2"
-                      >
-                        {text}
-                      </p>
-                    );
-                  }
-                  return (
-                    <p key={i} className="text-sm text-gray-700">
-                      {line}
-                    </p>
-                  );
-                })}
-            </div>
-
-            <button
-              className="mt-4 bg-green-500 text-white px-4 py-2 rounded self-start"
-              onClick={() => setAiEmail("")}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {loadInterviewQuestions && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-2xl w-125 shadow-lg flex flex-col items-center gap-3">
-            <h2 className="text-xl font-bold">✨ AI Next Steps</h2>
-            <p className="text-gray-500 text-sm">Thinking...</p>
-            <div className="w-8 h-8 border-4 border-green-400 border-t-transparent rounded-full animate-spin" />
-          </div>
-        </div>
-      )}
+      {loadInterviewQuestions && <LoadingAi />}
       {interviewQuestions && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-2xl w-125 max-h-[80vh] flex flex-col shadow-lg">
-            <h2 className="text-xl font-bold mb-4">✨ AI Interview Ptactice</h2>
-
-            <div className="overflow-y-auto flex-1 pr-1 prose max-w-none">
-              <ReactMarkdown>{interviewQuestions}</ReactMarkdown>
-            </div>
-
-            <button
-              className="mt-4 bg-green-500 text-white px-4 py-2 rounded self-start"
-              onClick={() => setInterviewQuestions("")}
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <InterviewQuestions
+          onClose={() => setInterviewQuestions("")}
+          interviewQuestions={interviewQuestions}
+        />
       )}
     </div>
   );
