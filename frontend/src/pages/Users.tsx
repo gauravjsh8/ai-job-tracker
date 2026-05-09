@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { RefreshCw } from "lucide-react";
-import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 type UserType = {
   _id: string;
