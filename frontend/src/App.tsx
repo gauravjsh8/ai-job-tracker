@@ -17,8 +17,19 @@ import MyProfile from "./pages/MyProfile";
 import ForgotPssword from "./pages/ForgotPssword";
 import ResetPassword from "./pages/ResetPassword";
 import ResumeUpload from "./pages/ResumeUpload";
+import { useThemeStore } from "./store/ThemeStore";
+import { useEffect } from "react";
 
 function App() {
+  const { darkMode } = useThemeStore();
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
   return (
     <>
       <Toaster position="top-right" />

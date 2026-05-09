@@ -2,9 +2,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/AuthStore";
 import toast from "react-hot-toast";
 import { useEffect, useRef, useState } from "react";
+import { useThemeStore } from "../store/ThemeStore";
 
 export const Navbar = () => {
   const { user, logout } = useAuthStore();
+  const { darkMode, toggleTheme } = useThemeStore();
 
   const [open, setOpen] = useState(false);
 
@@ -31,10 +33,19 @@ export const Navbar = () => {
   };
 
   return (
-    <div className="bg-white p-3 flex items-center justify-between ">
+    <div
+      className={`
+    ${darkMode ? "bg-slate-900 text-white" : "bg-white text-black"}
+    p-3 flex items-center justify-between
+  `}
+    >
+      {" "}
       <Link to="/" className="text-green-500 font-extrabold">
         Job-Tracker
       </Link>
+      <button className="  p-3 cursor-pointer" onClick={toggleTheme}>
+        {darkMode ? "☀️" : "⏾⋆"}
+      </button>
       {user && (
         <div className="flex items-center gap-5">
           <Link className="text-green-500 font-bold" to="/dashboard">
@@ -50,7 +61,6 @@ export const Navbar = () => {
           )}
         </div>
       )}
-
       {user ? (
         <div className="flex items-center justify-between gap-3">
           <h1>
@@ -72,13 +82,13 @@ export const Navbar = () => {
                 <Link
                   to="/my-profile"
                   onClick={() => setOpen(false)}
-                  className="hover:text-white hover:bg-green-500"
+                  className="hover:text-white hover:bg-green-500 text-black"
                 >
                   My-profile
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="hover:text-white hover:bg-green-500 text-left cursor-pointer "
+                  className="hover:text-white hover:bg-green-500 text-left cursor-pointer text-black "
                 >
                   Logout
                 </button>

@@ -52,7 +52,7 @@ const Dashboard = () => {
     );
 
     try {
-      await api.patch(`/jobs/${jobId}`, { ...jobs, status: String(newStatus) });
+      await api.patch(`/jobs/${jobId}`, { status: String(newStatus) });
     } catch (error) {
       console.log(error);
     }
